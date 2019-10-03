@@ -1,7 +1,5 @@
-<<<<<<< HEAD
-# category_widget
-
-Category Widget Flutter application
+# unit-converter-flutter
+Unit Converter app made with Flutter, following the course of Building Native Applications with Flutter from Google/Udacity
 
 ## Getting Started
 
@@ -15,7 +13,3 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
-=======
-# unit-converter-flutter
-Unit Converter app made with Flutter, following the course of Building Native Applications with Flutter from Google/Udacity
->>>>>>> refs/remotes/origin/master

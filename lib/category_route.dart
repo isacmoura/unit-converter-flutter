@@ -1,6 +1,11 @@
+// Copyright 2018 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 import 'package:flutter/material.dart';
 
 import 'category.dart';
+import 'unit.dart';
 
 final _backgroundColor = Colors.green[100];
 
@@ -36,33 +41,37 @@ class CategoryRoute extends StatelessWidget {
     Colors.red,
   ];
 
+  /// Makes the correct number of rows for the list view.
+  ///
+  /// For portrait, we use a [ListView].
+  Widget _buildCategoryWidgets(List<Widget> categories) {
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) => categories[index],
+      itemCount: categories.length,
+    );
+  }
+
+  /// Returns a list of mock [Unit]s.
+  List<Unit> _retrieveUnitList(String categoryName) {
+    return List.generate(10, (int i) {
+      i += 1;
+      return Unit(
+        name: '$categoryName Unit $i',
+        conversion: i.toDouble(),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var portrait = MediaQuery.of(context).orientation == Orientation.portrait;
-
-    Widget _buildCategoryWidgets(List<Widget> categories) {
-      if(portrait) {
-        return ListView.builder(
-          physics: const AlwaysScrollableScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) => categories[index],
-            itemCount: categories.length,
-        );
-      } else {
-        return GridView.count(
-            crossAxisCount: 2,
-            childAspectRatio: 3.0,
-            children: categories,
-        );
-      }
-    }
-
     final categories = <Category>[];
 
-    for(var i = 0; i < _categoryNames.length; i++) {
+    for (var i = 0; i < _categoryNames.length; i++) {
       categories.add(Category(
         name: _categoryNames[i],
         color: _baseColors[i],
-        icon: Icons.cake,
+        iconLocation: Icons.cake,
+        units: _retrieveUnitList(_categoryNames[i]),
       ));
     }
 
@@ -74,41 +83,20 @@ class CategoryRoute extends StatelessWidget {
 
     final appBar = AppBar(
       elevation: 0.0,
-      title:
-        Text('Unit Converter',
-          style: TextStyle(
-              fontSize: 30.0,
-              color: Colors.black,
-          ),
+      title: Text(
+        'Unit Converter',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 30.0,
         ),
+      ),
       centerTitle: true,
+      backgroundColor: _backgroundColor,
     );
 
     return Scaffold(
       appBar: appBar,
       body: listView,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        tooltip: 'Add item',
-        backgroundColor: Colors.green,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home')
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.update),
-              title: Text('Update')
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.error),
-              title: Text('Report')
-          ),
-        ],
-      ),
     );
   }
 }

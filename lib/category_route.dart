@@ -43,6 +43,7 @@ class CategoryRoute extends StatelessWidget {
     Widget _buildCategoryWidgets(List<Widget> categories) {
       if(portrait) {
         return ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
             itemBuilder: (BuildContext context, int index) => categories[index],
             itemCount: categories.length,
         );
@@ -65,7 +66,6 @@ class CategoryRoute extends StatelessWidget {
       ));
     }
 
-    // TODO: Create a list view of the Categories
     final listView = Container(
       color: _backgroundColor,
       padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -87,6 +87,28 @@ class CategoryRoute extends StatelessWidget {
     return Scaffold(
       appBar: appBar,
       body: listView,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        tooltip: 'Add item',
+        backgroundColor: Colors.green,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            title: Text('Home')
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.update),
+              title: Text('Update')
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.error),
+              title: Text('Report')
+          ),
+        ],
+      ),
     );
   }
 }

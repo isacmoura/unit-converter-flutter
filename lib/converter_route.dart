@@ -34,7 +34,6 @@ class _ConverterRouteState extends State<ConverterRoute> {
   @override
   Widget build(BuildContext context) {
     // Here is just a placeholder for a list of mock units
-    // TODO: Once the build() function is inside the State object,
     // you'll have to reference this using `widget.units`
     final unitWidgets = widget.units.map((Unit unit) {
       return Container(

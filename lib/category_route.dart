@@ -1,7 +1,3 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:flutter/material.dart';
 
 import 'category.dart';
@@ -16,9 +12,15 @@ final _backgroundColor = Colors.green[100];
 ///
 /// While it is named CategoryRoute, a more apt name would be CategoryScreen,
 /// because it is responsible for the UI at the route's destination.
-class CategoryRoute extends StatelessWidget {
+
+class CategoryRoute extends StatefulWidget {
   const CategoryRoute();
 
+  @override
+  createState() => _CategoryRouteState();
+}
+  // TODO: Create State object for the CategoryRoute
+class _CategoryRouteState extends State<CategoryRoute> {
   static const _categoryNames = <String>[
     'Length',
     'Area',
@@ -64,6 +66,11 @@ class CategoryRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: Instead of re-creating a list of Categories in every build(),
+    // save this as a variable inside the State object and create
+    // the list at initialization (in initState()).
+    // This way, you also don't have to pass in the list of categories to
+    // _buildCategoryWidgets()
     final categories = <Category>[];
 
     for (var i = 0; i < _categoryNames.length; i++) {

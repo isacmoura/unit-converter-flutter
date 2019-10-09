@@ -31,6 +31,9 @@ class UnitConverterApp extends StatelessWidget {
           bodyColor: Colors.black,
           displayColor: Colors.grey[600],
         ),
+        // This colors the [InputOutlineBorder] when it is selected
+        primaryColor: Colors.grey[500],
+        textSelectionHandleColor: Colors.green[500],
       ),
       home: CategoryRoute(),
     );

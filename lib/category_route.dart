@@ -1,3 +1,7 @@
+// Copyright 2018 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -32,7 +36,6 @@ class _CategoryRouteState extends State<CategoryRoute> {
   // `children` property, we call .toList() on it.
   // For more details, see https://github.com/dart-lang/sdk/issues/27755
   final _categories = <Category>[];
-
   static const _baseColors = <ColorSwatch>[
     ColorSwatch(0xFF6AB7A8, {
       'highlight': Color(0xFF6AB7A8),
@@ -69,15 +72,26 @@ class _CategoryRouteState extends State<CategoryRoute> {
     }),
   ];
 
-    @override
-    Future<void> didChangeDependencies() async {
-      super.didChangeDependencies();
-      // We have static unit conversions located in our
-      // assets/data/regular_units.json
-      if (_categories.isEmpty) {
-        await _retrieveLocalCategories();
-      }
+  static const _icons = <String>[
+    'assets/icons/area.png',
+    'assets/icons/currency.png',
+    'assets/icons/digital_storage.png',
+    'assets/icons/length.png',
+    'assets/icons/mass.png',
+    'assets/icons/power.png',
+    'assets/icons/time.png',
+    'assets/icons/volume.png'
+  ];
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    // We have static unit conversions located in our
+    // assets/data/regular_units.json
+    if (_categories.isEmpty) {
+      await _retrieveLocalCategories();
     }
+  }
 
   /// Retrieves a list of [Categories] and their [Unit]s
   Future<void> _retrieveLocalCategories() async {
@@ -90,26 +104,24 @@ class _CategoryRouteState extends State<CategoryRoute> {
     if (data is! Map) {
       throw ('Data retrieved from API is not a Map');
     }
-
     var categoryIndex = 0;
     data.keys.forEach((key) {
-      final List<Unit> units = data[key].map<Unit>((dynamic data) => Unit.fromJson(data)).toList();
+      final List<Unit> units =
+      data[key].map<Unit>((dynamic data) => Unit.fromJson(data)).toList();
 
       var category = Category(
         name: key,
         units: units,
         color: _baseColors[categoryIndex],
-        iconLocation: Icons.cake,
+        iconLocation: _icons[categoryIndex],
       );
-
       setState(() {
-        if(categoryIndex == 0) {
+        if (categoryIndex == 0) {
           _defaultCategory = category;
         }
-
         _categories.add(category);
       });
-      categoryIndex++;
+      categoryIndex += 1;
     });
   }
 

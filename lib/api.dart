@@ -14,8 +14,8 @@ import 'package:category_widget/category.dart';
 ///   GET /currency/convert: get conversion from one currency amount to another
 class Api {
 
-  final String baseUrl = 'flutter.udacity.com';
-  final HttpClient httpClient = HttpClient();
+  final String _baseUrl = 'flutter.udacity.com';
+  final HttpClient _httpClient = HttpClient();
 
   /// Gets all the units and conversion rates for a given category.
   ///
@@ -25,12 +25,9 @@ class Api {
   /// Returns a list. Returns null on error.
   Future<List> getUnits(String category) async {
     try {
-      final uri = Uri.https(baseUrl, '/$category');
-      final httpRequest = await httpClient.getUrl(uri);
-      final httpResponse = await httpRequest.close();
+      final uri = Uri.https(_baseUrl, '/$category');
 
-      final responseBody = await httpResponse.transform(utf8.decoder).join();
-      final jsonResponse = json.decode(responseBody);
+      final jsonResponse = await _getJson(uri);
 
       return jsonResponse['units'];
     } on Exception catch (e) {
@@ -45,15 +42,11 @@ class Api {
 
   Future<double> convert(String category, String amount, String fromUnit, String toUnit) async {
     try{
-      final uri = Uri.https(baseUrl, '/$category/convert', {
+      final uri = Uri.https(_baseUrl, '/$category/convert', {
         'amount': amount, 'from': fromUnit, 'to': toUnit
       });
 
-      final httpRequest = await httpClient.getUrl(uri);
-      final httpResponse = await httpRequest.close();
-
-      final responseBody = await httpResponse.transform(utf8.decoder).join();
-      final jsonResponse = json.decode(responseBody);
+      final jsonResponse = await _getJson(uri);
 
       return jsonResponse['conversion'].toDouble();
     } on Exception catch (e) {
@@ -61,4 +54,18 @@ class Api {
         return null;
     }
   }
+
+  Future<Map<String, dynamic>> _getJson(Uri uri) async {
+    try{
+      final httpRequest = await _httpClient.getUrl(uri);
+      final httpResponse = await httpRequest.close();
+
+      final responseBody = await httpResponse.transform(utf8.decoder).join();
+      return json.decode(responseBody);
+    } on Exception catch(e) {
+      print('$e');
+      return null;
+    }
+  }
+
 }

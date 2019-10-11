@@ -105,6 +105,10 @@ class _UnitConverterState extends State<UnitConverter> {
         _convertedValue = _format(conversion);
       });
 
+    } else {
+      setState(() {
+        _convertedValue = _format(_inputValue * (_toValue.conversion / _fromValue.conversion));
+      });
     }
   }
 

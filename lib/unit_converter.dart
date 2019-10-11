@@ -1,3 +1,4 @@
+import 'package:category_widget/api.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
@@ -94,11 +95,17 @@ class _UnitConverterState extends State<UnitConverter> {
     return outputNum;
   }
 
-  void _updateConversion() {
-    setState(() {
-      _convertedValue =
-          _format(_inputValue * (_toValue.conversion / _fromValue.conversion));
-    });
+  void _updateConversion() async {
+    var api = Api();
+
+    if(widget.category.name == 'Currency') {
+      final conversion = await api.convert('currency', _inputValue.toString(), _fromValue.name, _toValue.name);
+
+      setState(() {
+        _convertedValue = _format(conversion);
+      });
+
+    }
   }
 
   void _updateInputValue(String input) {

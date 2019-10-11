@@ -1,12 +1,9 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
+import 'api.dart';
 import 'backdrop.dart';
 import 'category.dart';
 import 'category_tile.dart';
@@ -71,16 +68,15 @@ class _CategoryRouteState extends State<CategoryRoute> {
       'error': Color(0xFF912D2D),
     }),
   ];
-
   static const _icons = <String>[
-    'assets/icons/area.png',
-    'assets/icons/currency.png',
-    'assets/icons/digital_storage.png',
     'assets/icons/length.png',
+    'assets/icons/area.png',
+    'assets/icons/volume.png',
     'assets/icons/mass.png',
-    'assets/icons/power.png',
     'assets/icons/time.png',
-    'assets/icons/volume.png'
+    'assets/icons/digital_storage.png',
+    'assets/icons/power.png',
+    'assets/icons/currency.png',
   ];
 
   @override
@@ -88,8 +84,11 @@ class _CategoryRouteState extends State<CategoryRoute> {
     super.didChangeDependencies();
     // We have static unit conversions located in our
     // assets/data/regular_units.json
+    // and we want to also obtain up-to-date Currency conversions from the web
+    // We only want to load our data in once
     if (_categories.isEmpty) {
       await _retrieveLocalCategories();
+      await _retrieveApiCategory();
     }
   }
 
@@ -123,6 +122,41 @@ class _CategoryRouteState extends State<CategoryRoute> {
       });
       categoryIndex += 1;
     });
+  }
+
+  Future<void> _retrieveApiCategory() async {
+    final api = Api();
+    final jsonUnits = await api.getUnits('currency');
+
+    if(jsonUnits != null) {
+      setState(() {
+        _categories.add(Category(
+            name: 'Currency',
+            units: [],
+            color: _baseColors.last,
+            iconLocation: _icons.last,
+        ));
+      });
+    }
+
+    if(jsonUnits != null) {
+      final units = <Unit>[];
+      for (var unit in jsonUnits) {
+        units.add(Unit.fromJson(unit));
+      }
+
+      setState(() {
+        _categories.removeLast();
+        _categories.add(Category(
+          name: 'Currency',
+          units: units,
+          iconLocation: _icons.last,
+          color: _baseColors.last
+        ));
+      });
+
+    }
+
   }
 
   /// Function to call when a [Category] is tapped.

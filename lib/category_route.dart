@@ -124,39 +124,36 @@ class _CategoryRouteState extends State<CategoryRoute> {
     });
   }
 
+  /// Retrieves a [Category] and its [Unit]s from an API on the web
   Future<void> _retrieveApiCategory() async {
+    // Add a placeholder while we fetch the Currency category using the API
+    setState(() {
+      _categories.add(Category(
+        name: 'Currency',
+        units: [],
+        color: _baseColors.last,
+        iconLocation: _icons.last,
+      ));
+    });
     final api = Api();
     final jsonUnits = await api.getUnits('currency');
-
-    if(jsonUnits != null) {
-      setState(() {
-        _categories.add(Category(
-            name: 'Currency',
-            units: [],
-            color: _baseColors.last,
-            iconLocation: _icons.last,
-        ));
-      });
-    }
-
-    if(jsonUnits != null) {
+    // If the API errors out or we have no internet connection, this category
+    // remains in placeholder mode (disabled)
+    if (jsonUnits != null) {
       final units = <Unit>[];
       for (var unit in jsonUnits) {
         units.add(Unit.fromJson(unit));
       }
-
       setState(() {
         _categories.removeLast();
         _categories.add(Category(
           name: 'Currency',
           units: units,
+          color: _baseColors.last,
           iconLocation: _icons.last,
-          color: _baseColors.last
         ));
       });
-
     }
-
   }
 
   /// Function to call when a [Category] is tapped.
@@ -174,9 +171,10 @@ class _CategoryRouteState extends State<CategoryRoute> {
     if (deviceOrientation == Orientation.portrait) {
       return ListView.builder(
         itemBuilder: (BuildContext context, int index) {
+          var _category = _categories[index];
           return CategoryTile(
-            category: _categories[index],
-            onTap: _onCategoryTap,
+            category: _category,
+            onTap: _category.name == 'Currency' && _category.units.isEmpty ? null : _onCategoryTap,
           );
         },
         itemCount: _categories.length,
